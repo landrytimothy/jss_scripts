@@ -10,16 +10,19 @@ jss_url = "Your JSS base url" + "JSSResource/computers/serialnumber/"
 api_user = "API Username"
 api_token = "API Passphrase"
 
-
+# Call subprocess to get client serial number
 def get_serial_number():
     command = "system_profiler SPHardwareDataType | awk '/Serial/ {print $4}'"
     process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     serial, error = process.communicate()
     return serial.strip()
 
+#Append serial number to api call
 full_url = jss_url + get_serial_number()
 req = urllib2.Request(full_url)
-req.get_method = lambda: 'GET'
+
+#Setting http method to 'DELETE'
+req.get_method = lambda: 'DELETE'
 
 password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
 password_manager.add_password(None, full_url, api_user, api_token)
